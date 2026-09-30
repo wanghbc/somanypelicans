@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#f2f4ee" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#111816" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <title>好多鹈鹕 So Many Pelicans — 不许备考，专治背题</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f2f4ee;
+      --surface: #ffffff;
+      --surface-2: #e8ece4;
+      --ink: #13201c;
+      --muted: #53645e;
+      --line: #ced7d1;
+      --accent: #087a5b;
+      --accent-strong: #056247;
+      --accent-soft: #dff3e9;
+      --warm: #e9a923;
+      --answer-bg: #eff8f3;
+      --shadow: 0 18px 50px rgba(20, 40, 32, .10);
+      --focus: #14946f;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111816;
+        --surface: #18221f;
+        --surface-2: #202e29;
+        --ink: #f2f7f4;
+        --muted: #adbbb5;
+        --line: #34453f;
+        --accent: #60d5ad;
+        --accent-strong: #8ae5c5;
+        --accent-soft: #163b30;
+        --warm: #f0bd52;
+        --answer-bg: #142b24;
+        --shadow: 0 20px 56px rgba(0, 0, 0, .28);
+        --focus: #7be2bd;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 2%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 28rem),
+        var(--bg);
+      color: var(--ink);
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, select { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, select:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--focus) 45%, transparent);
+      outline-offset: 2px;
+    }
+    .page { width: min(100% - 32px, 1040px); margin: 0 auto; padding: 70px 0 40px; }
+    .hero { max-width: 780px; margin-bottom: 42px; }
+    .hero-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 15px;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .hero-mark::before {
+      content: "";
+      width: 26px;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--warm);
+    }
+    h1 {
+      max-width: 700px;
+      margin: 0;
+      font-size: clamp(38px, 7vw, 70px);
+      line-height: 1.08;
+      letter-spacing: -.055em;
+      font-weight: 800;
+    }
+    .h1-en {
+      display: block;
+      margin-top: 10px;
+      font-size: clamp(20px, 3.2vw, 30px);
+      font-weight: 700;
+      letter-spacing: .01em;
+      color: var(--muted);
+    }
+    .hero p.tagline {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .hero p .en { color: var(--muted); }
+    .hero p {
+      margin: 21px 0 0;
+      max-width: 660px;
+      color: var(--muted);
+      font-size: clamp(17px, 2vw, 20px);
+      line-height: 1.75;
+    }
+    .workspace {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
+    .controls {
+      position: sticky;
+      top: 18px;
+      padding: 22px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 8px 25px rgba(20, 40, 32, .05);
+    }
+    .control-group + .control-group { margin-top: 22px; }
+    .control-label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+    select {
+      width: 100%;
+      min-height: 46px;
+      padding: 0 42px 0 13px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface-2);
+      color: var(--ink);
+      cursor: pointer;
+    }
+    .difficulty { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .diff-btn {
+      min-height: 42px;
+      padding: 7px 4px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: transparent;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .diff-btn[aria-pressed="true"] {
+      background: var(--accent-soft);
+      border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+      color: var(--accent-strong);
+    }
+    .new-btn {
+      width: 100%;
+      min-height: 50px;
+      margin-top: 24px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 24%, transparent);
+      transition: background .18s ease, transform .18s ease;
+    }
+    .new-btn:hover { background: var(--accent-strong); }
+    .new-btn:active { transform: translateY(1px); }
+    .question-card {
+      min-width: 0;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .chip.secondary { background: var(--surface-2); color: var(--muted); }
+    .id {
+      flex: none;
+      color: var(--muted);
+      font: 600 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: .08em;
+    }
+    .problem { padding: 30px 30px 26px; }
+    .problem h2 { margin: 0 0 10px; font-size: 24px; line-height: 1.35; letter-spacing: -.02em; }
+    .prompt-intro { margin: 0 0 22px; color: var(--muted); }
+    .statement-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 10px;
+    }
+    .statement-list li {
+      position: relative;
+      padding: 13px 16px 13px 43px;
+      background: var(--surface-2);
+      border-radius: 10px;
+      line-height: 1.55;
+    }
+    .statement-list li::before {
+      content: attr(data-n);
+      position: absolute;
+      left: 14px;
+      top: 13px;
+      width: 20px;
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .known-fact {
+      margin: 16px 0 0;
+      padding: 12px 15px;
+      border-left: 3px solid var(--warm);
+      background: color-mix(in srgb, var(--warm) 10%, var(--surface));
+      color: var(--ink);
+    }
+    .ask {
+      margin: 23px 0 0;
+      font-weight: 700;
+      font-size: 17px;
+    }
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 0 30px 26px;
+    }
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 9px 16px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: transparent;
+      cursor: pointer;
+      font-weight: 650;
+    }
+    .action-btn:hover { background: var(--surface-2); }
+    .answer {
+      margin: 0 30px 30px;
+      padding: 20px;
+      border-radius: 12px;
+      background: var(--answer-bg);
+      border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+    }
+    .answer[hidden] { display: none; }
+    .answer-label {
+      margin: 0 0 7px;
+      color: var(--accent-strong);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .answer-main { margin: 0; font-weight: 700; }
+    .answer-note { margin: 7px 0 0; color: var(--muted); font-size: 14px; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 34px; }
+    .info-block { padding: 26px 4px 8px; }
+    .info-block h2 { margin: 0 0 14px; font-size: 21px; letter-spacing: -.02em; }
+    .steps { margin: 0; padding: 0; list-style: none; counter-reset: steps; display: grid; gap: 13px; }
+    .steps li { counter-increment: steps; display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: start; }
+    .steps li::before {
+      content: counter(steps);
+      display: grid;
+      place-items: center;
+      width: 27px;
+      height: 27px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--bg);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .info-block p { margin: 0; color: var(--muted); }
+    footer {
+      margin-top: 42px;
+      padding: 24px 0 6px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+    .visitor-badge {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 3px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .visitor-badge strong { color: var(--ink); font-weight: 800; }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      z-index: 5;
+      transform: translate(-50%, 14px);
+      padding: 10px 15px;
+      border-radius: 8px;
+      background: var(--ink);
+      color: var(--bg);
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    @media (max-width: 760px) {
+      .page { width: min(100% - 22px, 600px); padding-top: 36px; }
+      .hero { margin-bottom: 28px; }
+      h1 { font-size: clamp(37px, 12vw, 54px); }
+      .hero p { font-size: 16px; }
+      .workspace { grid-template-columns: 1fr; }
+      .controls { position: static; padding: 16px; }
+      .controls-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .control-group + .control-group { margin-top: 0; }
+      .new-btn { margin-top: 14px; }
+      .problem { padding: 24px 19px 20px; }
+      .card-top { padding: 16px 18px; align-items: flex-start; }
+      .id { padding-top: 6px; }
+      .card-actions { padding: 0 19px 20px; }
+      .action-btn { flex: 1 1 130px; }
+      .answer { margin: 0 19px 20px; }
+      .info-grid { grid-template-columns: 1fr; gap: 0; margin-top: 26px; }
+      .info-block { padding: 22px 3px 4px; }
+    }
+    @media (max-width: 430px) {
+      .controls-inner { grid-template-columns: 1fr; }
+      .control-group + .control-group { margin-top: 4px; }
+      .difficulty { gap: 5px; }
+      .card-top { flex-direction: column-reverse; gap: 9px; }
+      .id { padding-top: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="hero-mark">即时生成 · 本地计算</div>
+      <h1>好多鹈鹕<span class="h1-en">So Many Pelicans</span></h1>
+      <p class="tagline">不许备考，专治背题。<span class="en">No prep allowed — memorized answers won't save you.</span></p>
+      <p>每一道具体题目都由浏览器随机生成，尽量避开公开题目的原样重复。把它发给任何模型，看看它是否真的会推理。<span class="en">Each question is generated live in your browser, avoiding repeats of public sets. Send it to any model and see whether it can truly reason.</span></p>
+    </header>
+
+    <section class="workspace" aria-label="出题区">
+      <aside class="controls" aria-label="题目设置">
+        <div class="controls-inner">
+          <div class="control-group">
+            <label class="control-label" for="category">题目类别</label>
+            <select id="category">
+              <option value="truth">真话假话</option>
+              <option value="condition">条件推理</option>
+              <option value="ranking">排名推理</option>
+              <option value="sequence">数列推理</option>
+              <option value="random" selected>随机</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <span class="control-label">难度</span>
+            <div class="difficulty" role="group" aria-label="选择难度">
+              <button class="diff-btn" type="button" data-diff="easy" aria-pressed="false">简单</button>
+              <button class="diff-btn" type="button" data-diff="medium" aria-pressed="true">中等</button>
+              <button class="diff-btn" type="button" data-diff="hard" aria-pressed="false">困难</button>
+            </div>
+          </div>
+        </div>
+        <button class="new-btn" id="newQuestion" type="button">换一道</button>
+      </aside>
+
+      <article class="question-card" aria-live="polite">
+        <div class="card-top">
+          <div class="chips">
+            <span class="chip" id="typeChip">真话假话</span>
+            <span class="chip secondary" id="diffChip">中等</span>
+          </div>
+          <span class="id" id="questionId">ID · ------</span>
+        </div>
+        <div class="problem" id="problem"></div>
+        <div class="card-actions">
+          <button class="action-btn" id="copyQuestion" type="button">复制题目</button>
+          <button class="action-btn" id="toggleAnswer" type="button" aria-expanded="false">显示答案</button>
+        </div>
+        <div class="answer" id="answer" hidden></div>
+      </article>
+    </section>
+
+    <section class="info-grid">
+      <div class="info-block">
+        <h2>怎么用</h2>
+        <ol class="steps">
+          <li>选择类别和难度，生成一道新题。</li>
+          <li>复制题目，发给任意 AI 作答。</li>
+          <li>点“显示答案”，对比它的推理结果。</li>
+        </ol>
+      </div>
+      <div class="info-block">
+        <h2>为什么有效</h2>
+        <p>随机人名、数字和条件让具体题目不太可能原样出现在训练数据里，因此更侧重现场推理，而非复述记忆。我们无法查看模型的训练数据，也不能保证题型或推理模式从未出现；随机化的作用，是让背下某道固定答案基本失效。</p>
+      </div>
+    </section>
+
+    <footer>本站题目由浏览器本地随机算法实时生成，不联网，每次都不同。<span class="visitor-badge">👁 访问量 <strong id="visitor-count">…</strong></span></footer>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var namePool = ["阿哲", "小曼", "老陈", "大刘", "阿琳", "小赵", "小夏", "阿岚", "老周", "小唐", "阿宁", "小顾", "大勇", "小叶", "阿洛", "小苏", "老秦", "小程", "阿禾", "小白"];
+      var labels = { truth: "真话假话", condition: "条件推理", ranking: "排名推理", sequence: "数列推理" };
+      var diffLabels = { easy: "简单", medium: "中等", hard: "困难" };
+      var countByDiff = { easy: 3, medium: 4, hard: 5 };
+      var currentDiff = "medium";
+      var current = null;
+
+      function randomInt(min, max) {
+        var span = max - min + 1;
+        var maxValid = Math.floor(4294967296 / span) * span;
+        var value;
+        do {
+          var box = new Uint32Array(1);
+          crypto.getRandomValues(box);
+          value = box[0];
+        } while (value >= maxValid);
+        return min + (value % span);
+      }
+
+      function pick(arr) { return arr[randomInt(0, arr.length - 1)]; }
+
+      function shuffle(arr) {
+        var out = arr.slice();
+        for (var i = out.length - 1; i > 0; i--) {
+          var j = randomInt(0, i);
+          var t = out[i]; out[i] = out[j]; out[j] = t;
+        }
+        return out;
+      }
+
+      function makeId() {
+        var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        var out = "";
+        for (var i = 0; i < 6; i++) out += chars[randomInt(0, chars.length - 1)];
+        return out;
+      }
+
+      function chooseNames(n) { return shuffle(namePool).slice(0, n); }
+
+      function allBoolStates(n) {
+        var states = [];
+        for (var mask = 0; mask < Math.pow(2, n); mask++) {
+          var s = [];
+          for (var i = 0; i < n; i++) s.push(Boolean(mask & (1 << i)));
+          states.push(s);
+        }
+        return states;
+      }
+
+      function truthEval(stmt, state) {
+        if (stmt.type === "knight") return state[stmt.a];
+        if (stmt.type === "knave") return !state[stmt.a];
+        if (stmt.type === "same") return state[stmt.a] === state[stmt.b];
+        if (stmt.type === "different") return state[stmt.a] !== state[stmt.b];
+        if (stmt.type === "atLeast") return state.filter(Boolean).length >= stmt.k;
+        if (stmt.type === "atMostKnaves") return state.filter(function (v) { return !v; }).length <= stmt.k;
+        return false;
+      }
+
+      function truthText(stmt, names) {
+        if (stmt.type === "knight") return names[stmt.a] + "是骑士";
+        if (stmt.type === "knave") return names[stmt.a] + "是无赖";
+        if (stmt.type === "same") return names[stmt.a] + "和" + names[stmt.b] + "是同一种人";
+        if (stmt.type === "different") return names[stmt.a] + "和" + names[stmt.b] + "是不同种人";
+        if (stmt.type === "atLeast") return "我们当中至少有" + stmt.k + "个骑士";
+        return "我们当中至多有" + stmt.k + "个无赖";
+      }
+
+      function truthCandidatesForSpeaker(speaker, n, target) {
+        var others = [];
+        for (var i = 0; i < n; i++) if (i !== speaker) others.push(i);
+        var candidates = [];
+        others.forEach(function (a) {
+          candidates.push({ type: "knight", a: a }, { type: "knave", a: a });
+        });
+        for (var x = 0; x < others.length; x++) {
+          for (var y = x + 1; y < others.length; y++) {
+            candidates.push({ type: "same", a: others[x], b: others[y] });
+            candidates.push({ type: "different", a: others[x], b: others[y] });
+          }
+        }
+        for (var k = 1; k <= n; k++) candidates.push({ type: "atLeast", k: k });
+        for (var q = 0; q <= n - 1; q++) candidates.push({ type: "atMostKnaves", k: q });
+        return shuffle(candidates.filter(function (c) { return truthEval(c, target) === target[speaker]; }));
+      }
+
+      function truthSolutionCount(statements, n) {
+        return allBoolStates(n).filter(function (state) {
+          return statements.every(function (stmt, speaker) {
+            return stmt && truthEval(stmt, state) === state[speaker];
+          });
+        }).length;
+      }
+
+      function findTruthStatements(target, n) {
+        var states = allBoolStates(n);
+        function walk(speaker, chosen, possible) {
+          if (speaker === n) return possible.length === 1 ? chosen : null;
+          var candidates = truthCandidatesForSpeaker(speaker, n, target).map(function (stmt) {
+            var next = possible.filter(function (state) { return truthEval(stmt, state) === state[speaker]; });
+            return { stmt: stmt, next: next, tie: randomInt(0, 9999) };
+          }).filter(function (item) { return item.next.length > 0 && item.next.length < possible.length + 1; });
+          candidates.sort(function (a, b) { return a.next.length - b.next.length || a.tie - b.tie; });
+          for (var i = 0; i < Math.min(candidates.length, 18); i++) {
+            var result = walk(speaker + 1, chosen.concat([candidates[i].stmt]), candidates[i].next);
+            if (result) return result;
+          }
+          return null;
+        }
+        return walk(0, [], states);
+      }
+
+      function generateTruth(n) {
+        for (var attempt = 0; attempt < 500; attempt++) {
+          var names = chooseNames(n);
+          var target = [];
+          for (var i = 0; i < n; i++) target.push(Boolean(randomInt(0, 1)));
+          var statements = findTruthStatements(target, n);
+          if (statements && truthSolutionCount(statements, n) === 1) {
+            var rows = statements.map(function (s, idx) {
+              return "<li data-n=\"" + (idx + 1) + "\"><strong>" + names[idx] + "：</strong>“" + truthText(s, names) + "。”</li>";
+            }).join("");
+            var answer = names.map(function (name, idx) { return name + "是" + (target[idx] ? "骑士" : "无赖"); }).join("；") + "。";
+            return {
+              title: "谁是骑士，谁是无赖？",
+              intro: "以下每个人要么永远说真话（骑士），要么永远说假话（无赖）：",
+              body: "<ul class=\"statement-list\">" + rows + "</ul><p class=\"ask\">请判断每个人的身份。</p>",
+              answer: answer,
+              note: "程序已枚举全部 " + Math.pow(2, n) + " 种身份组合，只有这一种同时满足所有发言。"
+            };
+          }
+        }
+        return generateTruth(n);
+      }
+
+      function conditionEval(c, state) {
+        if (c.type === "if") return !state[c.a] || state[c.b];
+        if (c.type === "one") return state[c.a] || state[c.b];
+        if (c.type === "notBoth") return !(state[c.a] && state[c.b]);
+        if (c.type === "iffNot") return state[c.a] === !state[c.b];
+        if (c.type === "ifNot") return state[c.a] || !state[c.b];
+        return false;
+      }
+
+      function conditionText(c, names) {
+        if (c.type === "if") return "如果" + names[c.a] + "参加，那么" + names[c.b] + "参加";
+        if (c.type === "one") return names[c.a] + "和" + names[c.b] + "至少有一人参加";
+        if (c.type === "notBoth") return names[c.a] + "和" + names[c.b] + "不会同时参加";
+        if (c.type === "iffNot") return names[c.a] + "参加，当且仅当" + names[c.b] + "不参加";
+        return "如果" + names[c.a] + "不参加，那么" + names[c.b] + "也不参加";
+      }
+
+      function allConditionCandidates(n, target) {
+        var out = [];
+        for (var a = 0; a < n; a++) {
+          for (var b = 0; b < n; b++) {
+            if (a === b) continue;
+            ["if", "ifNot"].forEach(function (type) {
+              var c = { type: type, a: a, b: b };
+              if (conditionEval(c, target)) out.push(c);
+            });
+            if (a < b) {
+              ["one", "notBoth", "iffNot"].forEach(function (type) {
+                var c = { type: type, a: a, b: b };
+                if (conditionEval(c, target)) out.push(c);
+              });
+            }
+          }
+        }
+        return shuffle(out);
+      }
+
+      function generateCondition(n) {
+        for (var attempt = 0; attempt < 500; attempt++) {
+          var names = chooseNames(n);
+          var target = [];
+          for (var i = 0; i < n; i++) target.push(Boolean(randomInt(0, 1)));
+          var factPerson = randomInt(0, n - 1);
+          var possible = allBoolStates(n).filter(function (s) { return s[factPerson] === target[factPerson]; });
+          var candidates = allConditionCandidates(n, target);
+          var chosen = [];
+          while (possible.length > 1 && candidates.length) {
+            var scored = candidates.map(function (c) {
+              var next = possible.filter(function (s) { return conditionEval(c, s); });
+              return { c: c, next: next, score: next.length, tie: randomInt(0, 9999) };
+            }).filter(function (x) { return x.next.length < possible.length; });
+            if (!scored.length) break;
+            scored.sort(function (a, b) { return a.score - b.score || a.tie - b.tie; });
+            var bestSize = scored[0].score;
+            var shortlist = scored.filter(function (x) { return x.score <= bestSize + 1; }).slice(0, 6);
+            var selected = pick(shortlist);
+            chosen.push(selected.c);
+            possible = selected.next;
+            candidates = candidates.filter(function (c) { return c !== selected.c; });
+          }
+          if (possible.length === 1) {
+            var rows = chosen.map(function (c, idx) {
+              return "<li data-n=\"" + (idx + 1) + "\">" + conditionText(c, names) + "。</li>";
+            }).join("");
+            var fact = "已知：" + names[factPerson] + (target[factPerson] ? "参加活动" : "不参加活动") + "。";
+            var answer = names.map(function (name, idx) { return name + (target[idx] ? "参加" : "不参加"); }).join("；") + "。";
+            return {
+              title: "谁会参加这场活动？",
+              intro: "所有条件都为真，请根据它们作出判断：",
+              body: "<ul class=\"statement-list\">" + rows + "</ul><p class=\"known-fact\"><strong>" + fact + "</strong></p><p class=\"ask\">请判断每个人是否参加。</p>",
+              answer: answer,
+              note: "程序已枚举全部 " + Math.pow(2, n) + " 种参加组合，答案唯一。"
+            };
+          }
+        }
+        return generateCondition(n);
+      }
+
+      function permutations(arr) {
+        if (arr.length <= 1) return [arr.slice()];
+        var out = [];
+        for (var i = 0; i < arr.length; i++) {
+          var rest = arr.slice(0, i).concat(arr.slice(i + 1));
+          permutations(rest).forEach(function (p) { out.push([arr[i]].concat(p)); });
+        }
+        return out;
+      }
+
+      function rankEval(c, order) {
+        var ra = order.indexOf(c.a);
+        var rb = c.b === undefined ? -1 : order.indexOf(c.b);
+        if (c.type === "taller") return ra < rb;
+        if (c.type === "shorter") return ra > rb;
+        if (c.type === "highest") return ra === 0;
+        if (c.type === "lowest") return ra === order.length - 1;
+        if (c.type === "notHighest") return ra !== 0;
+        if (c.type === "rank") return ra === c.k - 1;
+        return false;
+      }
+
+      function rankText(c, names) {
+        if (c.type === "taller") return names[c.a] + "比" + names[c.b] + "高";
+        if (c.type === "shorter") return names[c.a] + "比" + names[c.b] + "矮";
+        if (c.type === "highest") return names[c.a] + "是最高的";
+        if (c.type === "lowest") return names[c.a] + "是最矮的";
+        if (c.type === "notHighest") return names[c.a] + "不是最高的";
+        return names[c.a] + "排第" + c.k + "名";
+      }
+
+      function rankCandidates(n, target) {
+        var all = [];
+        for (var a = 0; a < n; a++) {
+          for (var b = a + 1; b < n; b++) {
+            [{ type: "taller", a: a, b: b }, { type: "shorter", a: a, b: b }, { type: "taller", a: b, b: a }, { type: "shorter", a: b, b: a }].forEach(function (c) {
+              if (rankEval(c, target)) all.push(c);
+            });
+          }
+          [{ type: "highest", a: a }, { type: "lowest", a: a }, { type: "notHighest", a: a }].forEach(function (c) {
+            if (rankEval(c, target)) all.push(c);
+          });
+          for (var k = 1; k <= n; k++) {
+            var c = { type: "rank", a: a, k: k };
+            if (rankEval(c, target)) all.push(c);
+          }
+        }
+        return shuffle(all);
+      }
+
+      function generateRanking(n) {
+        for (var attempt = 0; attempt < 500; attempt++) {
+          var names = chooseNames(n);
+          var indices = [];
+          for (var i = 0; i < n; i++) indices.push(i);
+          var target = shuffle(indices);
+          var possible = permutations(indices);
+          var candidates = rankCandidates(n, target);
+          var chosen = [];
+          while (possible.length > 1 && candidates.length) {
+            var scored = candidates.map(function (c) {
+              var next = possible.filter(function (p) { return rankEval(c, p); });
+              var directPenalty = (c.type === "rank" || c.type === "highest" || c.type === "lowest") ? 0.3 : 0;
+              return { c: c, next: next, score: next.length + directPenalty, tie: randomInt(0, 9999) };
+            }).filter(function (x) { return x.next.length < possible.length; });
+            if (!scored.length) break;
+            scored.sort(function (a, b) { return a.score - b.score || a.tie - b.tie; });
+            var top = scored.slice(0, Math.min(5, scored.length));
+            var selected = pick(top);
+            chosen.push(selected.c);
+            possible = selected.next;
+            candidates = candidates.filter(function (c) { return c !== selected.c; });
+          }
+          if (possible.length === 1) {
+            var rows = shuffle(chosen).map(function (c, idx) {
+              return "<li data-n=\"" + (idx + 1) + "\">" + rankText(c, names) + "。</li>";
+            }).join("");
+            var answer = target.map(function (idx, rank) { return "第" + (rank + 1) + "名" + names[idx]; }).join("，") + "。";
+            return {
+              title: "他们的身高如何排名？",
+              intro: "以下陈述全部为真，且每个人身高都不同：",
+              body: "<ul class=\"statement-list\">" + rows + "</ul><p class=\"ask\">请给出从高到矮的完整顺序。</p>",
+              answer: answer,
+              note: "程序已检查全部 " + possibleFactorial(n) + " 种排列，只有这一种符合条件。"
+            };
+          }
+        }
+        return generateRanking(n);
+      }
+
+      function possibleFactorial(n) {
+        var out = 1;
+        for (var i = 2; i <= n; i++) out *= i;
+        return out;
+      }
+
+      function generateSequence(diff) {
+        var allowed = diff === "easy" ? ["recurrence"] : diff === "medium" ? ["recurrence", "interleaved"] : ["recurrence", "interleaved", "quadratic"];
+        var type = pick(allowed);
+        var seq = [];
+        var explanation = "";
+        if (type === "recurrence") {
+          var x = randomInt(1, 4), p = pick([2, 3]), q = randomInt(1, 5);
+          seq.push(x);
+          for (var i = 1; i < 6; i++) seq.push(p * seq[i - 1] + q);
+          explanation = "从第2项起，每一项都是前一项×" + p + "+" + q + "。";
+        } else if (type === "interleaved") {
+          var odd = randomInt(1, 12), even = randomInt(1, 12);
+          var d1 = randomInt(-4, 7), d2;
+          if (d1 === 0) d1 = 2;
+          do { d2 = randomInt(-4, 7); } while (d2 === d1 || d2 === 0);
+          for (var j = 0; j < 3; j++) { seq.push(odd + j * d1); seq.push(even + j * d2); }
+          explanation = "奇数位构成公差为" + d1 + "的等差数列；偶数位构成公差为" + d2 + "的等差数列。";
+        } else {
+          var c1 = pick([1, 2, -1]), c2 = randomInt(-5, 5), c3 = randomInt(0, 10);
+          for (var n = 1; n <= 6; n++) seq.push(c1 * n * n + c2 * n + c3);
+          var sign2 = c2 >= 0 ? "+" + c2 : String(c2);
+          var sign3 = c3 >= 0 ? "+" + c3 : String(c3);
+          explanation = "第n项满足 aₙ=" + c1 + "n²" + sign2 + "n" + sign3 + "（n从1开始）。";
+        }
+        return {
+          title: "第六项是什么？",
+          intro: "观察下面这组由一个确定规则生成的数列：",
+          body: "<ul class=\"statement-list\"><li data-n=\"\">" + seq.slice(0, 5).join("，") + "，？</li></ul><p class=\"ask\">请写出第6项，并说明规律。</p>",
+          answer: "第6项是 " + seq[5] + "。",
+          note: explanation
+        };
+      }
+
+      function renderQuestion() {
+        var selected = document.getElementById("category").value;
+        var type = selected === "random" ? pick(["truth", "condition", "ranking", "sequence"]) : selected;
+        var n = countByDiff[currentDiff];
+        var data;
+        if (type === "truth") data = generateTruth(n);
+        else if (type === "condition") data = generateCondition(n);
+        else if (type === "ranking") data = generateRanking(n);
+        else data = generateSequence(currentDiff);
+        current = { id: makeId(), type: type, diff: currentDiff, data: data };
+        document.getElementById("typeChip").textContent = labels[type];
+        document.getElementById("diffChip").textContent = diffLabels[currentDiff];
+        document.getElementById("questionId").textContent = "ID · " + current.id;
+        document.getElementById("problem").innerHTML = "<h2>" + data.title + "</h2><p class=\"prompt-intro\">" + data.intro + "</p>" + data.body;
+        document.getElementById("answer").innerHTML = "<p class=\"answer-label\">标准答案</p><p class=\"answer-main\">" + data.answer + "</p><p class=\"answer-note\">" + data.note + "</p>";
+        document.getElementById("answer").hidden = true;
+        var toggle = document.getElementById("toggleAnswer");
+        toggle.textContent = "显示答案";
+        toggle.setAttribute("aria-expanded", "false");
+      }
+
+      function plainQuestion() {
+        var box = document.getElementById("problem");
+        return "题目ID：" + current.id + "\n类别：" + labels[current.type] + "｜难度：" + diffLabels[current.diff] + "\n\n" + box.innerText.trim();
+      }
+
+      function showToast(text) {
+        var toast = document.getElementById("toast");
+        toast.textContent = text;
+        toast.classList.add("show");
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(function () { toast.classList.remove("show"); }, 1500);
+      }
+
+      function copyText(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { showToast("题目已复制"); }, function () { fallbackCopy(text); });
+        } else fallbackCopy(text);
+      }
+
+      function fallbackCopy(text) {
+        var area = document.createElement("textarea");
+        area.value = text;
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        try { document.execCommand("copy"); showToast("题目已复制"); }
+        catch (e) { showToast("复制失败，请手动选择题面"); }
+        document.body.removeChild(area);
+      }
+
+      document.querySelectorAll(".diff-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          currentDiff = btn.getAttribute("data-diff");
+          document.querySelectorAll(".diff-btn").forEach(function (b) { b.setAttribute("aria-pressed", String(b === btn)); });
+          renderQuestion();
+        });
+      });
+      document.getElementById("category").addEventListener("change", renderQuestion);
+      document.getElementById("newQuestion").addEventListener("click", renderQuestion);
+      document.getElementById("copyQuestion").addEventListener("click", function () { copyText(plainQuestion()); });
+      document.getElementById("toggleAnswer").addEventListener("click", function () {
+        var answer = document.getElementById("answer");
+        var willShow = answer.hidden;
+        answer.hidden = !willShow;
+        this.textContent = willShow ? "隐藏答案" : "显示答案";
+        this.setAttribute("aria-expanded", String(willShow));
+      });
+
+      renderQuestion();
+    }());
+  </script>
+  <script>
+    /* ===== 访客计数器（So Many Pelicans）=====
+       COUNTER_API：你的计数 Worker 地址，例如
+         https://somanypelicans-counter.你的子域名.workers.dev
+       留空则只显示下方起始数，不联网计数。
+       COUNTER_START：起始数量（不从零开始）。KV 里的 total 也要设成同样的值。 */
+    (function () {
+      var COUNTER_API = "https://somanypelicans-counter.wanghbc.workers.dev";
+      var COUNTER_START = 1305;
+      var el = document.getElementById("visitor-count");
+      if (!el) return;
+      function fmt(n) { return Number(n).toLocaleString("en-US"); }
+      if (!COUNTER_API) { el.textContent = fmt(COUNTER_START); return; }
+      fetch(COUNTER_API.replace(/\/+$/, "") + "/hits", { mode: "cors" })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { el.textContent = fmt(d.count); })
+        .catch(function () { el.textContent = fmt(COUNTER_START); });
+    }());
+  </script>
+</body>
+</html>
